@@ -34,7 +34,6 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          # echo "{name}={image}" >> $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   Continuous-Deployment:
     needs: Continuous-Integration
@@ -55,4 +54,6 @@ jobs:
 
       - name: Run Docker Image to serve users
         run: |
-         docker run -d --name medibot -e PINECONE_API_KEY="${{ secrets.PINECONE_API_KEY }}" -e ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" -p 8080:8080 "${{ steps.login-ecr.outputs.registry }}"/"${{ secrets.ECR_REPO }}":latest
+         docker image pull "${{ steps.login-ecr.outputs.registry }}"/"${{ secrets.ECR_REPO }}":latest
+         docker compose rm -fs medibot
+         docker compose up -d medibot
