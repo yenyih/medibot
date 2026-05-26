@@ -54,6 +54,5 @@ jobs:
 
       - name: Run Docker Image to serve users
         run: |
-         docker image pull "${{ steps.login-ecr.outputs.registry }}"/"${{ secrets.ECR_REPO }}":latest
          docker compose rm -fs medibot
          docker compose up -d medibot
